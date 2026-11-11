@@ -2,14 +2,17 @@
 /* ===== CONFIG — set these before going live ===== */
 const FORM_ENDPOINT = "";   // e.g. your FlexiFunnels / CRM webhook URL (receives JSON POST)
 const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to show a confirmation message instead
-  Women: "", Men: "", Couple: "", VIP: ""
+  Women: "https://rzp.io/rzp/NclhUxo",
+  Men: "https://rzp.io/rzp/J5TWbOT",
+  Couple: "https://rzp.io/rzp/03ahbKZG",
+  VIP: "https://rzp.io/rzp/LXdR7KJk"
 };
 
 (function(){
   // Sticky mobile CTA
   const sticky=document.getElementById("stickyCta");
   const onScroll=()=>{const y=window.scrollY;
-    const reg=document.getElementById("register").getBoundingClientRect();
+    const reg=document.getElementById("passes").getBoundingClientRect();
     sticky.classList.toggle("show",y>window.innerHeight*.8 && !(reg.top<window.innerHeight && reg.bottom>0));};
   window.addEventListener("scroll",onScroll,{passive:true});onScroll();
 
@@ -48,36 +51,6 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
     cards.addEventListener("touchend",()=>{setTimeout(()=>{paused=false;start()},4000)},{passive:true});
     document.getElementById("cPrev").addEventListener("click",start);next.addEventListener("click",start);
   })();
-
-  // States
-  const states=["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry","Outside India"];
-  const stSel=document.getElementById('state');states.forEach(s=>{const o=document.createElement('option');o.value=o.textContent=s;stSel.appendChild(o)});
-
-  // Pass pre-select
-  const passSel=document.getElementById('pass');
-  document.querySelectorAll('[data-pass]').forEach(b=>b.addEventListener('click',()=>{passSel.value=b.dataset.pass}));
-
-  // Form
-  const form=document.getElementById('regForm'),msg=document.getElementById('formMsg');
-  const fail=(id,bad)=>{const f=document.getElementById(id).closest('.fld');f.classList.toggle('bad',bad);return !bad};
-  form.addEventListener('submit',async e=>{e.preventDefault();
-    const d=Object.fromEntries(new FormData(form));const ph=(d.phone||'').replace(/\D/g,'');
-    let ok=fail('name',(d.name||'').trim().length<2);
-    ok=fail('email',!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email||''))&&ok;
-    ok=fail('phone',d.cc==='+91'?!/^[6-9]\d{9}$/.test(ph):(ph.length<6||ph.length>14))&&ok;
-    ok=fail('state',!d.state)&&ok;
-    const cf=document.getElementById('commitFld');cf.classList.toggle('bad',!d.commit);ok=!!d.commit&&ok;
-    const cn=document.getElementById('consentFld');cn.classList.toggle('bad',!d.consent);ok=!!d.consent&&ok;
-    if(!ok){form.querySelector('.bad input,.bad select')?.focus();return}
-    d.consent_given=true;d.consent_timestamp=new Date().toISOString();d.consent_notice_version="privacy-policy-2026-11";
-    d.phone=d.cc+ph;d.event="Grand E-Com Summit Mumbai 2027";d.page=location.href;
-    const btn=form.querySelector('button[type=submit]');btn.disabled=true;btn.style.opacity=.7;
-    try{if(FORM_ENDPOINT){await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}}catch(err){}
-    const pay=PAYMENT_URLS[d.pass];
-    if(pay){const u=new URL(pay);u.searchParams.set('name',d.name);u.searchParams.set('email',d.email);u.searchParams.set('phone',d.phone);location.href=u.toString();return}
-    msg.style.display='block';msg.textContent="Thanks, "+d.name.split(' ')[0]+"! Your details are in. Our team will reach out on "+d.phone+" to complete your booking.";
-    btn.disabled=false;btn.style.opacity=1;form.reset();});
-  form.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',()=>i.closest('.fld').classList.remove('bad')));
 
   document.getElementById('yr').textContent=new Date().getFullYear();
 })();

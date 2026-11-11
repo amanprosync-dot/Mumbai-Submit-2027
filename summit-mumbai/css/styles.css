@@ -272,7 +272,8 @@ fieldset.fld{border:0;padding:0;margin:0}
 .venue-info h3{font-family:var(--f-display);font-weight:700;font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.1;margin:.9rem 0 .5rem}
 .venue-info .addr{color:var(--dim);margin-bottom:1.6rem}
 .venue-info .facts{margin-bottom:2rem}
-.venue-info .actions{margin-top:auto}
+.venue-info .actions{margin-top:auto;display:flex;flex-wrap:wrap;gap:.8rem}
+@media (max-width:600px){.venue-info .actions{flex-direction:column}.venue-info .actions .btn{width:100%;justify-content:center;text-align:center}}
 .map{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--border);min-height:380px;background:var(--bg-dark-alt)}
 .map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:invert(.92) hue-rotate(180deg) saturate(.7) brightness(.95)}
 .map .corner{z-index:3}
@@ -288,13 +289,23 @@ fieldset.fld{border:0;padding:0;margin:0}
 .f-soc a:hover{border-color:var(--accent);background:rgba(0,127,255,.15)}
 .f-soc svg{width:17px;height:17px;fill:#fff}
 .f-rule{height:1px;background:var(--border);margin:2rem 0}
-.f-contacts{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.f-grid{display:grid;grid-template-columns:1.3fr .8fr 1.2fr 1fr;gap:2rem}
+.f-col h4{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;font-weight:600}
+.f-col p{color:var(--dim);font-size:.95rem;line-height:1.55}
+.f-facts,.f-links{list-style:none;padding:0;margin:.9rem 0 0;display:grid;gap:.5rem;font-size:.92rem;color:var(--dim)}
+.f-links{margin:0}
+.f-links a{color:var(--text);transition:color .3s}
+.f-links a:hover{color:var(--accent)}
+.f-contacts{display:flex;flex-direction:column;gap:1.1rem}
+.f-contacts h4{margin-bottom:0}
+.f-cta .btn{margin-top:1rem}
 .f-contacts a small{display:block;font-family:var(--f-mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:.35rem}
 .f-contacts a span{font-size:1.1rem;transition:color .3s}
 .f-contacts a:hover span{color:var(--accent)}
 .f-legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;margin-top:2.6rem;font-size:.85rem;color:var(--faint)}
 .f-legal a{color:var(--accent)}
-@media (max-width:760px){.f-contacts{grid-template-columns:1fr}}
+@media (max-width:1000px){.f-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.f-grid{grid-template-columns:1fr;gap:1.8rem}.f-top{flex-direction:column;align-items:flex-start}.f-legal{flex-direction:column;gap:.6rem}.f-cta .btn{width:100%;justify-content:center}}
 
 /* Sticky mobile CTA */
 .sticky-cta{position:fixed;left:.8rem;right:.8rem;bottom:.8rem;z-index:900;display:none;align-items:center;justify-content:space-between;gap:.8rem;padding:.6rem .6rem .6rem 1.1rem;border-radius:999px;background:rgba(6,21,37,.92);border:1px solid var(--border-soft);backdrop-filter:blur(12px);transform:translateY(140%);transition:transform .5s var(--ease)}
@@ -346,6 +357,10 @@ fieldset.fld{border:0;padding:0;margin:0}
 .card .cn{font-size:3.1rem;letter-spacing:-.03em}
 .card .ic{width:56px;height:56px;padding:13px;right:1.6rem;top:1.7rem;border-radius:16px;opacity:1;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;background:rgba(125,249,255,.12);border:1px solid rgba(125,249,255,.28);transition:transform .5s var(--ease),background .4s}
 .card:hover .ic{transform:rotate(-6deg) scale(1.08);background:rgba(125,249,255,.2)}
+.card .art{position:absolute;left:50%;top:calc(50% - 34px);width:min(68%,230px);height:auto;transform:translate(-50%,-50%);fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.65;pointer-events:none;z-index:-1;transition:transform .6s var(--ease),opacity .4s}
+.c-light .art{stroke:var(--main);opacity:.55}
+.card:hover .art,.card.is-active .art{transform:translate(-50%,-50%) scale(1.07);opacity:.9}
+@media (max-width:600px){.card .art{width:min(60%,200px)}}
 .card>div{padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.16)}
 .card h3{font-size:1.4rem;letter-spacing:-.01em;margin-bottom:.6rem}
 .card p{line-height:1.6}
