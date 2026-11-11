@@ -49,10 +49,6 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
     document.getElementById("cPrev").addEventListener("click",start);next.addEventListener("click",start);
   })();
 
-  // VIP sparks
-  const sp=document.getElementById('sparks');
-  for(let i=0;i<18;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3)+'s';sp.appendChild(s)}
-
   // States
   const states=["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry","Outside India"];
   const stSel=document.getElementById('state');states.forEach(s=>{const o=document.createElement('option');o.value=o.textContent=s;stSel.appendChild(o)});
