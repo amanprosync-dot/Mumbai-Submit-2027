@@ -230,7 +230,7 @@
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background-image: url("../images/hero-bg.jpg");
+    background-image: url("../images/hero-bg.webp");
     background-size: cover;
     background-position-y: 40%;
     overflow: hidden;
