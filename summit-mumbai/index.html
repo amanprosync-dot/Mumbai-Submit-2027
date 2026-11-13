@@ -304,7 +304,7 @@
               <span class="cx-progress"></span>
             </div>
             <div class="cx-panel" tabindex="0">
-              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/c2.webp" />
+              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/manuf.webp" />
               <span class="cx-shade"></span>
               <span class="cx-num">02</span>
               <span class="cx-vlabel">MANUFACTURES</span>
@@ -324,7 +324,7 @@
               <span class="cx-progress"></span>
             </div>
             <div class="cx-panel" tabindex="0">
-              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/c4.webp" />
+              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/ecom sellers.webp" />
               <span class="cx-shade"></span>
               <span class="cx-num">04</span>
               <span class="cx-vlabel">E-COMMERCE SELLERS</span>
@@ -334,22 +334,12 @@
               <span class="cx-progress"></span>
             </div>
             <div class="cx-panel" tabindex="0">
-              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/c5.webp" />
+              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/Suppliers.webp" />
               <span class="cx-shade"></span>
               <span class="cx-num">05</span>
               <span class="cx-vlabel">SUPPLIERS</span>
               <div class="cx-body">
                 <h3 class="cx-name">SUPPLIERS</h3>
-              </div>
-              <span class="cx-progress"></span>
-            </div>
-            <div class="cx-panel" tabindex="0">
-              <img alt="GRAND E-COM AI SUMMIT MUMBAI" class="cx-bg" src="images/c4.webp" />
-              <span class="cx-shade"></span>
-              <span class="cx-num">06</span>
-              <span class="cx-vlabel">MARKETPLACE SELLERS</span>
-              <div class="cx-body">
-                <h3 class="cx-name">MARKETPLACE SELLERS</h3>
               </div>
               <span class="cx-progress"></span>
             </div>
@@ -1128,9 +1118,7 @@
               </ul>
               <a
                 class="btn btn-ghost btn-block"
-                href="https://rzp.io/rzp/J5TWbOT"
-                target="_blank"
-                rel="noopener"
+                href="#register" data-pass="Men"
                 >Book Now</a
               >
             </article>
@@ -1154,9 +1142,7 @@
               </ul>
               <a
                 class="btn btn-solid btn-block"
-                href="https://rzp.io/rzp/NclhUxo"
-                target="_blank"
-                rel="noopener"
+                href="#register" data-pass="Women"
                 >Book Now</a
               >
             </article>
@@ -1180,9 +1166,7 @@
               </div>
               <a
                 class="btn btn-gold btn-block"
-                href="https://rzp.io/rzp/LXdR7KJk"
-                target="_blank"
-                rel="noopener"
+                href="#register" data-pass="VIP"
                 >Get Your VIP Seat Now</a
               >
             </article>
@@ -1205,9 +1189,7 @@
               </ul>
               <a
                 class="btn btn-ghost btn-block"
-                href="https://rzp.io/rzp/03ahbKZG"
-                target="_blank"
-                rel="noopener"
+                href="#register" data-pass="Couple"
                 >Book Now</a
               >
             </article>
@@ -1220,6 +1202,114 @@
               play in India's e-commerce ecosystem — so women attendees get a
               special discount on their pass.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== REGISTRATION ===== -->
+      <section class="sec reg" id="register">
+        <div class="grid-bg"></div>
+        <div class="wrap">
+          <div class="reg-card rv">
+            <div class="reg-info">
+              <span class="tag">— Registration</span>
+              <h2 class="h2">
+                Limited seats. <span class="accent">Serious entrepreneurs only.</span>
+              </h2>
+              <p class="reg-lead">
+                A curated room for the Mumbai edition. Fill in your details and
+                you'll be taken straight to payment.
+              </p>
+              <div class="seats">
+                <div class="seats-top">
+                  <span>Seats left</span><b>27</b>
+                </div>
+                <div class="seats-bar"><i style="width: 66%"></i></div>
+                <div class="seats-bot">
+                  <span>53 of 80 taken</span><span>Mumbai edition</span>
+                </div>
+              </div>
+              <ul class="reg-facts">
+                <li>16 January 2027 · Full-day event, 09:00 – 17:00</li>
+                <li>Radisson Hotel Mumbai Andheri MIDC, Andheri East</li>
+                <li>Buffet lunch, tea, coffee &amp; snacks included</li>
+              </ul>
+            </div>
+    
+            <form class="reg-form" id="regForm" novalidate>
+              <h3>Secure your seat</h3>
+              <p class="reg-note">
+                Takes under a minute. You will be redirected to payment on
+                submit.
+              </p>
+    
+              <label for="rPass">Pass *</label>
+              <select id="rPass" name="pass" required>
+                <option value="Men">Men — ₹5,995</option>
+                <option value="Women" selected>Women — ₹4,995</option>
+                <option value="Couple">Couple — ₹9,995</option>
+                <option value="VIP">VIP — ₹9,995</option>
+              </select>
+    
+              <label for="rName">Full name *</label>
+              <input id="rName" name="name" type="text" placeholder="Your full name" autocomplete="name" required />
+    
+              <label for="rEmail">Email address *</label>
+              <input id="rEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+    
+              <label for="rPhone">Phone number *</label>
+              <div class="phone-row">
+                <select aria-label="Country code" name="cc">
+                  <option value="+91">+91 IN</option>
+                </select>
+                <input id="rPhone" name="phone" type="tel" inputmode="numeric" maxlength="10" minlength="10" pattern="[0-9]{10}" placeholder="9876543210" autocomplete="tel-national" title="Enter exactly 10 digits" required />
+              </div>
+    
+              <label for="rState">State *</label>
+              <select id="rState" name="state" required>
+                <option value="">Select state</option>
+                <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option>
+                <option>Chandigarh</option><option>Chhattisgarh</option><option>Delhi</option>
+                <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+                <option>Himachal Pradesh</option><option>Jammu &amp; Kashmir</option><option>Jharkhand</option>
+                <option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option>
+                <option>Maharashtra</option><option>Odisha</option><option>Punjab</option>
+                <option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option>
+                <option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
+                <option>Other</option>
+              </select>
+    
+              <fieldset>
+                <legend>Are you committed to attending the event? *</legend>
+                <div class="radios">
+                  <label><input type="radio" name="commit" value="Yes" required /> Yes, I will attend</label>
+                  <label><input type="radio" name="commit" value="Not sure" /> Not sure yet</label>
+                </div>
+              </fieldset>
+    
+              <label class="consent">
+                <input type="checkbox" id="rConsent" name="consent" required />
+                <span>
+                  I am 18 years or older. I consent to ProSync Infotech
+                  processing my name, email, phone number, state and attendance
+                  intent to register me for and communicate about this event, as
+                  described in the
+                  <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                  I can withdraw consent at any time. *
+                </span>
+              </label>
+    
+              <p class="reg-error" id="regError" role="alert" hidden></p>
+              <button class="btn btn-solid btn-block" type="submit" id="regBtn">
+                Reserve my seat &amp; continue to payment &rarr;
+              </button>
+              <p class="reg-fine">
+                Your details are used only for this registration.
+                <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy notice</a>
+                · Withdraw consent or erase data:
+                <a href="mailto:support@prosyncedu.com">support@prosyncedu.com</a>
+              </p>
+            </form>
           </div>
         </div>
       </section>

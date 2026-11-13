@@ -52,5 +52,39 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
     document.getElementById("cPrev").addEventListener("click",start);next.addEventListener("click",start);
   })();
 
+  // Registration form -> optional webhook, then payment link for the chosen pass
+  (()=>{const f=document.getElementById("regForm");if(!f)return;
+    const err=document.getElementById("regError"),btn=document.getElementById("regBtn");
+    const show=m=>{err.textContent=m;err.hidden=!m};
+    // Pass "Book Now" buttons scroll here with that pass preselected
+    document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>{document.getElementById("rPass").value=a.dataset.pass}));
+    // Phone: digits only, max 10 (also handles paste)
+    const ph=document.getElementById("rPhone");
+    if(ph)ph.addEventListener("input",()=>{const v=ph.value.replace(/\D/g,"").slice(0,10);if(ph.value!==v)ph.value=v});
+    f.addEventListener("submit",async e=>{e.preventDefault();show("");
+      const d=Object.fromEntries(new FormData(f).entries());
+      f.querySelectorAll("[aria-invalid]").forEach(x=>x.removeAttribute("aria-invalid"));
+      const bad=(id,m)=>{const el=document.getElementById(id);if(el){el.setAttribute("aria-invalid","true");el.focus()}show(m)};
+      const phone=(d.phone||"").replace(/\D/g,"");
+      if(!(d.name||"").trim())return bad("rName","Please enter your full name.");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email||""))return bad("rEmail","Please enter a valid email address.");
+      if(phone.length!==10)return bad("rPhone","Please enter a valid 10-digit phone number.");
+      if(!d.state)return bad("rState","Please select your state.");
+      if(!d.commit)return show("Please tell us if you are committed to attending.");
+      if(!d.consent)return bad("rConsent","Please tick the consent box to continue.");
+      btn.disabled=true;
+      // Open the tab now (inside the click gesture) so popup blockers allow it; point it at payment after the webhook call
+      const payWin=PAYMENT_URLS[d.pass]?window.open("","_blank"):null;
+      const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
+      try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),keepalive:true})}catch(_){}
+      const url=PAYMENT_URLS[d.pass];
+      if(url){const u=new URL(url);u.searchParams.set("name",payload.name);u.searchParams.set("email",payload.email);u.searchParams.set("contact",payload.phone);
+        const href=u.toString();
+        if(payWin&&!payWin.closed)payWin.location.href=href;else window.open(href,"_blank")||(location.href=href);
+        f.innerHTML='<div class="reg-done"><h3>Thank you, '+payload.name.replace(/[<>&"]/g,"")+'!</h3><p>Your payment page has opened in a new tab. If it did not, <a href="'+href+'" target="_blank" rel="noopener">click here to pay</a>.</p></div>'}
+      else{f.innerHTML='<div class="reg-done"><h3>Thank you, '+payload.name.replace(/[<>&"]/g,"")+'!</h3><p>We have received your registration and will be in touch shortly.</p></div>'}
+    });
+  })();
+
   document.getElementById('yr').textContent=new Date().getFullYear();
 })();

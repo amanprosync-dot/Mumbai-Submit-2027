@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration — The Grand E-Com Summit Mumbai 2027</title>
+    <meta name="theme-color" content="#061525" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300..900&family=Figtree:wght@300..800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ===== Base / shared (only what the registration section uses) ===== */
+      :root{
+        --main:#007FFF; --accent:#7DF9FF;
+        --bg:#000; --bg-dark:#061525;
+        --text:#F5FCFF; --dim:rgba(245,252,255,.72); --faint:rgba(245,252,255,.5);
+        --border:#1B405D;
+        --f-display:"Archivo",system-ui,sans-serif; --f-body:"Figtree",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+        --ease:cubic-bezier(.65,0,.35,1); --wrap:1240px; --pad:clamp(1.15rem,4vw,2.5rem);
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+      body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);line-height:1.55;overflow-x:hidden}
+      a{color:inherit;text-decoration:none}
+      h1,h2,h3,h4,p{margin:0}
+      button,input,select{font:inherit}
+      .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--pad);position:relative;z-index:2}
+      .accent{color:var(--accent);text-shadow:0 0 24px rgba(125,249,255,.35)}
+      .tag{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+      .h2{font-family:var(--f-display);font-weight:300;text-transform:uppercase;font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;letter-spacing:-.01em}
+      .sec{position:relative;padding:clamp(4.5rem,10vw,8rem) 0;overflow:hidden}
+      .grid-bg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(125,249,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(125,249,255,.05) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+      .rv{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+      .rv.in{opacity:1;transform:none}
+      @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+      /* Buttons */
+      .btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;font-family:var(--f-mono);font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:1rem 1.6rem;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s,border-color .3s;white-space:nowrap}
+      .btn-solid{background:linear-gradient(90deg,var(--main),#2fb6ff);color:#fff;box-shadow:0 10px 30px -10px rgba(0,127,255,.8)}
+      .btn-solid:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(0,127,255,.95)}
+      .btn-block{width:100%}
+
+      /* ===== REGISTRATION ===== */
+      .reg{background:var(--bg-dark)}
+      .reg-card{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);padding:clamp(1.2rem,4vw,3.2rem);border:1px solid var(--border);border-radius:24px;background:linear-gradient(160deg,rgba(16,45,70,.55),rgba(6,21,37,.85));box-shadow:0 30px 80px -30px rgba(0,127,255,.35)}
+      .reg-info{align-self:start}
+      .reg-info .tag{display:block;margin-bottom:1rem;font-size:.66rem}
+      .reg-info .h2{font-weight:400;font-size:clamp(1.9rem,4.2vw,3.2rem)}
+      .reg-lead{margin-top:1.2rem;color:var(--dim);font-size:.95rem;max-width:34rem}
+      .seats{margin-top:1.6rem;padding:1.1rem 1.3rem;border:1px solid var(--border);border-radius:14px;background:rgba(0,0,0,.35)}
+      .seats-top,.seats-bot{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+      .seats-top b{font-family:var(--f-display);font-size:1.9rem;letter-spacing:0;color:var(--text)}
+      .seats-bar{height:6px;margin:.7rem 0;border-radius:99px;background:rgba(245,252,255,.12);overflow:hidden}
+      .seats-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--main),var(--accent))}
+      .reg-facts{list-style:none;margin:1.5rem 0 0;padding:0;display:grid;gap:.8rem;font-size:.88rem;color:var(--dim)}
+      .reg-facts li{padding-left:1.6rem;position:relative}
+      .reg-facts li::before{content:"";position:absolute;left:0;top:.35em;width:.7rem;height:.7rem;border:1.5px solid var(--accent);border-radius:3px}
+      .reg-form{padding:1.6rem;border:1px solid var(--border);border-radius:18px;background:rgba(0,0,0,.4)}
+      .reg-form h3{font-family:var(--f-display);font-size:1.25rem;font-weight:600}
+      .reg-note{margin:.4rem 0 1rem;font-size:.74rem;color:var(--faint)}
+      .reg-form label:not(.consent):not(.radios label),.reg-form legend{display:block;margin:1rem 0 .4rem;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:0}
+      .reg-form input[type=text],.reg-form input[type=email],.reg-form input[type=tel],.reg-form select{width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:10px;background:rgba(6,21,37,.8);color:var(--text);font-size:.88rem}
+      .reg-form input:focus,.reg-form select:focus{outline:2px solid var(--accent);outline-offset:1px}
+      .reg-form input[aria-invalid=true],.reg-form select[aria-invalid=true]{border-color:#ff6b6b}
+      .phone-row{display:grid;grid-template-columns:110px 1fr;gap:.6rem}
+      .reg-form fieldset{border:0;margin:0;padding:0;min-width:0}
+      .radios{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+      .radios label{display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:10px;font-size:.82rem;cursor:pointer}
+      .consent{display:flex;gap:.7rem;align-items:flex-start;margin-top:1.1rem;font-size:.72rem;line-height:1.45;color:var(--dim);cursor:pointer}
+      .consent input{margin-top:.2rem;flex:none}
+      .consent a,.reg-fine a{color:var(--accent);text-decoration:underline}
+      .reg-error{margin:.9rem 0 0;font-size:.8rem;color:#ff8a8a}
+      .reg-form .btn-block{width:100%;margin-top:1.1rem;white-space:normal}
+      .reg-form .btn[disabled]{opacity:.6;pointer-events:none}
+      .reg-fine{margin-top:.9rem;text-align:center;font-family:var(--f-mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);line-height:1.6}
+      .reg-done{padding:2rem 0;text-align:center}
+      .reg-done h3{margin-bottom:.6rem}
+      @media(max-width:900px){.reg-card{grid-template-columns:1fr}}
+      @media(max-width:480px){.radios{grid-template-columns:1fr}.reg-form{padding:1.1rem}}
+
+      /* ===== REGISTRATION: match reference design ===== */
+      .reg-form h3{font-size:1.7rem;font-weight:700;letter-spacing:-.01em}
+      .reg-note{margin:.7rem 0 1.4rem;font-size:.95rem;line-height:1.5;color:var(--faint)}
+      .reg-form label:not(.consent):not(.radios label),.reg-form legend{margin:1.35rem 0 .6rem;font-size:.66rem;letter-spacing:.2em}
+      .reg-form input[type=text],.reg-form input[type=email],.reg-form input[type=tel],.reg-form select{padding:1.05rem 1.2rem;border-radius:14px;font-size:1rem;background-color:rgba(8,28,48,.85);border-color:#1f4a6c}
+      .reg-form input::placeholder{color:rgba(245,252,255,.38)}
+      .reg-form select{-webkit-appearance:none;appearance:none;padding-right:2.6rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%237DF9FF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1.1rem center}
+      .reg-form select option{background:var(--bg-dark)}
+      .phone-row{grid-template-columns:108px 1fr}
+      .phone-row select{padding-right:2rem;background-position:right .8rem center}
+      .radios{gap:.8rem}
+      .radios label{padding:1.05rem 1.1rem;border-radius:14px;font-size:.95rem;font-weight:500;color:var(--text);background:rgba(8,28,48,.85);border-color:#1f4a6c}
+      .radios input[type=radio]{-webkit-appearance:none;appearance:none;flex:none;width:1.25rem;height:1.25rem;margin:0;border-radius:50%;background:#fff;border:0}
+      .radios input[type=radio]:checked{box-shadow:inset 0 0 0 .3rem #fff,inset 0 0 0 1rem var(--main)}
+      .consent{gap:.9rem;margin-top:1.4rem;font-size:.88rem;line-height:1.55;color:var(--text)}
+      .consent input[type=checkbox]{-webkit-appearance:none;appearance:none;flex:none;width:1.25rem;height:1.25rem;margin:.2rem 0 0;border-radius:4px;background:#fff;border:0;position:relative}
+      .consent input[type=checkbox]:checked{background:var(--main)}
+      .consent input[type=checkbox]:checked::after{content:"";position:absolute;left:.4rem;top:.15rem;width:.35rem;height:.65rem;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+      @media(max-width:480px){.reg-card{padding:1rem;border-radius:20px}.reg-form{padding:1rem .6rem;border:0;background:transparent}}
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <!-- ===== REGISTRATION ===== -->
+      <section class="sec reg" id="register">
+        <div class="grid-bg"></div>
+        <div class="wrap">
+          <div class="reg-card rv">
+            <div class="reg-info">
+              <span class="tag">— Registration</span>
+              <h2 class="h2">
+                Limited seats. <span class="accent">Serious entrepreneurs only.</span>
+              </h2>
+              <p class="reg-lead">
+                A curated room for the Mumbai edition. Fill in your details and
+                you'll be taken straight to payment.
+              </p>
+              <div class="seats">
+                <div class="seats-top">
+                  <span>Seats left</span><b>27</b>
+                </div>
+                <div class="seats-bar"><i style="width: 66%"></i></div>
+                <div class="seats-bot">
+                  <span>53 of 80 taken</span><span>Mumbai edition</span>
+                </div>
+              </div>
+              <ul class="reg-facts">
+                <li>16 January 2027 · Full-day event, 09:00 – 17:00</li>
+                <li>Radisson Hotel Mumbai Andheri MIDC, Andheri East</li>
+                <li>Buffet lunch, tea, coffee &amp; snacks included</li>
+              </ul>
+            </div>
+
+            <form class="reg-form" id="regForm" novalidate>
+              <h3>Secure your seat</h3>
+              <p class="reg-note">
+                Takes under a minute. You will be redirected to payment on
+                submit.
+              </p>
+
+              <label for="rPass">Pass *</label>
+              <select id="rPass" name="pass" required>
+                <option value="Men">Men — ₹5,995</option>
+                <option value="Women" selected>Women — ₹4,995</option>
+                <option value="Couple">Couple — ₹9,995</option>
+                <option value="VIP">VIP — ₹9,995</option>
+              </select>
+
+              <label for="rName">Full name *</label>
+              <input id="rName" name="name" type="text" placeholder="Your full name" autocomplete="name" required />
+
+              <label for="rEmail">Email address *</label>
+              <input id="rEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+
+              <label for="rPhone">Phone number *</label>
+              <div class="phone-row">
+                <select aria-label="Country code" name="cc">
+                  <option value="+91">+91 IN</option>
+                </select>
+                <input id="rPhone" name="phone" type="tel" inputmode="numeric" placeholder="98765 43210" autocomplete="tel-national" required />
+              </div>
+
+              <label for="rState">State *</label>
+              <select id="rState" name="state" required>
+                <option value="">Select state</option>
+                <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option>
+                <option>Chandigarh</option><option>Chhattisgarh</option><option>Delhi</option>
+                <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+                <option>Himachal Pradesh</option><option>Jammu &amp; Kashmir</option><option>Jharkhand</option>
+                <option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option>
+                <option>Maharashtra</option><option>Odisha</option><option>Punjab</option>
+                <option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option>
+                <option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
+                <option>Other</option>
+              </select>
+
+              <fieldset>
+                <legend>Are you committed to attending the event? *</legend>
+                <div class="radios">
+                  <label><input type="radio" name="commit" value="Yes" required /> Yes, I will attend</label>
+                  <label><input type="radio" name="commit" value="Not sure" /> Not sure yet</label>
+                </div>
+              </fieldset>
+
+              <label class="consent">
+                <input type="checkbox" id="rConsent" name="consent" required />
+                <span>
+                  I am 18 years or older. I consent to ProSync Infotech
+                  processing my name, email, phone number, state and attendance
+                  intent to register me for and communicate about this event, as
+                  described in the
+                  <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                  I can withdraw consent at any time. *
+                </span>
+              </label>
+
+              <p class="reg-error" id="regError" role="alert" hidden></p>
+              <button class="btn btn-solid btn-block" type="submit" id="regBtn">
+                Reserve my seat &amp; continue to payment &rarr;
+              </button>
+              <p class="reg-fine">
+                Your details are used only for this registration.
+                <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy notice</a>
+                · Withdraw consent or erase data:
+                <a href="mailto:support@prosyncedu.com">support@prosyncedu.com</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /* ===== CONFIG — set these before going live ===== */
+      const FORM_ENDPOINT = ""; // e.g. your FlexiFunnels / CRM webhook URL (receives JSON POST)
+      const PAYMENT_URLS = {    // Razorpay / payment page per pass; leave "" to show a confirmation message instead
+        Women: "https://rzp.io/rzp/NclhUxo",
+        Men: "https://rzp.io/rzp/J5TWbOT",
+        Couple: "https://rzp.io/rzp/03ahbKZG",
+        VIP: "https://rzp.io/rzp/LXdR7KJk"
+      };
+
+      (function(){
+        // Reveal-on-scroll for .rv elements
+        const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target)}),{threshold:.15,rootMargin:'0px 0px -40px 0px'});
+        document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+        // Registration form -> optional webhook, then payment link for the chosen pass
+        (()=>{const f=document.getElementById("regForm");if(!f)return;
+          const err=document.getElementById("regError"),btn=document.getElementById("regBtn");
+          const show=m=>{err.textContent=m;err.hidden=!m};
+          // Pass "Book Now" buttons scroll here with that pass preselected
+          document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>{document.getElementById("rPass").value=a.dataset.pass}));
+          f.addEventListener("submit",async e=>{e.preventDefault();show("");
+            const d=Object.fromEntries(new FormData(f).entries());
+            f.querySelectorAll("[aria-invalid]").forEach(x=>x.removeAttribute("aria-invalid"));
+            const bad=(id,m)=>{const el=document.getElementById(id);if(el){el.setAttribute("aria-invalid","true");el.focus()}show(m)};
+            const phone=(d.phone||"").replace(/\D/g,"");
+            if(!(d.name||"").trim())return bad("rName","Please enter your full name.");
+            if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email||""))return bad("rEmail","Please enter a valid email address.");
+            if(phone.length<10)return bad("rPhone","Please enter a valid 10-digit phone number.");
+            if(!d.state)return bad("rState","Please select your state.");
+            if(!d.commit)return show("Please tell us if you are committed to attending.");
+            if(!d.consent)return bad("rConsent","Please tick the consent box to continue.");
+            btn.disabled=true;
+            const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
+            try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),keepalive:true})}catch(_){}
+            const url=PAYMENT_URLS[d.pass];
+            if(url){const u=new URL(url);u.searchParams.set("name",payload.name);u.searchParams.set("email",payload.email);u.searchParams.set("contact",payload.phone);location.href=u.toString()}
+            else{f.innerHTML='<div class="reg-done"><h3>Thank you, '+payload.name.replace(/[<>&"]/g,"")+'!</h3><p>We have received your registration and will be in touch shortly.</p></div>'}
+          });
+        })();
+      })();
+    </script>
+  </body>
+</html>
