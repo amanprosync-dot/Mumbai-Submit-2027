@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
       { $group: { _id: { pass: "$pass", event: "$event" }, sessions: { $addToSet: "$sessionId" } } },
       { $project: { _id: 0, pass: "$_id.pass", event: "$_id.event", n: { $size: "$sessions" } } },
     ]).toArray();
-    const recent = await d.collection("events").find({}, { projection: { _id: 0, event: 1, pass: 1, at: 1, email: 1 } }).sort({ at: -1 }).limit(100).toArray();
+    const recent = await d.collection("events").find({}, { projection: { _id: 0, event: 1, pass: 1, at: 1, email: 1, name: 1 } }).sort({ at: -1 }).limit(100).toArray();
     const byPass = db.PASSES.map((p) => {
       const g = (e) => (ev.find((x) => x.pass === p && x.event === e) || {}).n || 0;
       const r = regs.filter((x) => x.pass === p);

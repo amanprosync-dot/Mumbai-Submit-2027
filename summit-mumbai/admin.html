@@ -208,9 +208,10 @@
         </select>
         <select id="fs">
           <option value="">All payments</option>
-          <option>paid</option>
-          <option>pending</option>
-          <option>failed</option>
+          <option>Paid</option>
+          <option>Awaiting payment</option>
+          <option>Not paid</option>
+          <option>Failed</option>
         </select>
       </div>
       <div class="tw">
@@ -239,6 +240,7 @@
               <th>Time</th>
               <th>Event</th>
               <th>Pass</th>
+              <th>Who</th>
               <th>Email</th>
             </tr>
           </thead>
@@ -302,11 +304,21 @@
         $("ev").innerHTML = D.recent
           .map(
             (e) =>
-              `<tr><td>${dt(e.at)}</td><td>${esc(e.event)}</td><td>${esc(e.pass)}</td><td>${esc(e.email)}</td></tr>`,
+              `<tr><td>${dt(e.at)}</td><td>${esc(e.event)}</td><td>${esc(e.pass)}</td><td>${esc(e.name || "Anonymous visitor")}</td><td>${esc(e.email)}</td></tr>`,
           )
           .join("");
         draw();
       }
+      // Paid -> "Paid". Unpaid -> "Awaiting payment" for 5 min after submit, then "Not paid".
+      const WAIT_MS = 5 * 60 * 1000;
+      function st(r) {
+        if (r.paid || r.paymentStatus === "paid") return "Paid";
+        if (r.paymentStatus === "failed") return "Failed";
+        const t = new Date(r.lastSubmittedAt || r.createdAt).getTime();
+        return Date.now() - t < WAIT_MS ? "Awaiting payment" : "Not paid";
+      }
+      const cls = (s) => ({ Paid: "paid", Failed: "failed", "Awaiting payment": "pending", "Not paid": "failed" })[s];
+      setInterval(() => { if (D) load(); }, 30000);
       function rows() {
         const q = $("q").value.toLowerCase(),
           p = $("fp").value,
@@ -314,7 +326,7 @@
         return D.regs.filter(
           (r) =>
             (!p || r.pass === p) &&
-            (!s || r.paymentStatus === s) &&
+            (!s || st(r) === s) &&
             (!q ||
               [r.name, r.email, r.phone].join(" ").toLowerCase().includes(q)),
         );
@@ -324,7 +336,7 @@
           rows()
             .map(
               (r) =>
-                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${esc(r.paymentStatus)}">${esc(r.paymentStatus)}</span></td><td>${esc(src(r))}</td></tr>`,
+                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${cls(st(r))}">${st(r)}</span></td><td>${esc(src(r))}</td></tr>`,
             )
             .join("") || '<tr><td colspan="9">No results</td></tr>';
       }
@@ -378,7 +390,7 @@
         const t = [h.join(",")]
           .concat(
             rows().map((r) =>
-              h.map((k) => c(k === "source" ? src(r) : r[k])).join(","),
+              h.map((k) => c(k === "source" ? src(r) : k === "paymentStatus" ? st(r) : r[k])).join(","),
             ),
           )
           .join("\n");

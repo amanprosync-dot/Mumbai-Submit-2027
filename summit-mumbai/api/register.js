@@ -30,6 +30,9 @@ module.exports = async (req, res) => {
       },
       { upsert: true }
     );
+    // Attribute this visitor's earlier anonymous clicks (same browser session) to the person
+    if (s(b.sessionId, 64))
+      await d.collection("events").updateMany({ sessionId: s(b.sessionId, 64), email: null }, { $set: { email, name: s(b.name) } });
     res.status(200).json({ ok: true });
   } catch (e) {
     console.error(e);

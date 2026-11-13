@@ -27,8 +27,8 @@ module.exports = async (req, res) => {
 
     await d.collection("payments").insertOne({ event: evt.event, paymentId: pay.id || null, linkId: link.id || null, amount: (pay.amount || link.amount_paid || 0) / 100, status: pay.status || link.status || null, email, phone10, receivedAt: now, raw: evt });
 
-    if ((paid || failed) && (email || phone10)) {
-      const match = { $or: [email && { email }, phone10 && { phone10 }].filter(Boolean) };
+    if ((paid || failed) && email) {
+      const match = { email }; // match on payer email only
       // paid: mark the latest unpaid registration; failed: just record it, never downgrade a paid one
       const upd = paid
         ? { $set: { paid: true, paymentStatus: "paid", paidAt: now, paymentId: pay.id || null, amountPaid: (pay.amount || link.amount_paid || 0) / 100, updatedAt: now } }
