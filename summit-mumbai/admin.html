@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Admin - Mumbai Summit</title>
+    <style>
+      :root {
+        --bg: #0f1117;
+        --card: #181b24;
+        --line: #2a2f3c;
+        --tx: #e8eaf0;
+        --mu: #8b93a7;
+        --ac: #f5b335;
+        --ok: #3ecf8e;
+        --bad: #ef6a6a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--tx);
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 24px 0 8px;
+        color: var(--mu);
+        font-weight: 600;
+      }
+      .bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+        color: var(--tx);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 12px;
+      }
+      button {
+        cursor: pointer;
+      }
+      button.p {
+        background: var(--ac);
+        color: #111;
+        border-color: var(--ac);
+        font-weight: 600;
+      }
+      .login {
+        max-width: 340px;
+        margin: 12vh auto;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 24px;
+        display: grid;
+        gap: 12px;
+      }
+      .login input {
+        width: 100%;
+      }
+      .err {
+        color: var(--bad);
+        min-height: 18px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+      }
+      .c {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .c b {
+        display: block;
+        font-size: 24px;
+      }
+      .c span {
+        color: var(--mu);
+      }
+      .tw {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 720px;
+      }
+      th,
+      td {
+        padding: 8px 10px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      th {
+        color: var(--mu);
+        font-weight: 600;
+      }
+      .tag {
+        padding: 2px 8px;
+        border-radius: 99px;
+        font-size: 12px;
+      }
+      .paid {
+        background: #143d2c;
+        color: var(--ok);
+      }
+      .pending {
+        background: #3a2f12;
+        color: var(--ac);
+      }
+      .failed {
+        background: #40191c;
+        color: var(--bad);
+      }
+      .f {
+        display: flex;
+        gap: 8px;
+        margin: 8px 0;
+        flex-wrap: wrap;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="login" id="lf">
+      <h1>Admin login</h1>
+      <input
+        id="em"
+        type="email"
+        placeholder="Email"
+        autocomplete="username"
+        required
+      />
+      <input
+        id="pw"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      />
+      <div class="err" id="le"></div>
+      <button class="p">Sign in</button>
+    </form>
+    <div class="wrap" id="app" hidden>
+      <div class="bar">
+        <h1>Mumbai Summit 2027 - Leads</h1>
+        <div>
+          <button id="rf">Refresh</button> <button id="csv">Export CSV</button>
+          <button id="lo">Log out</button>
+        </div>
+      </div>
+      <h2>Overview</h2>
+      <div class="cards" id="tot"></div>
+      <h2>Tickets: clicks to payments (unique visitors)</h2>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Pass</th>
+              <th>Clicked</th>
+              <th>Selected</th>
+              <th>Registered</th>
+              <th>Paid</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody id="bp"></tbody>
+        </table>
+      </div>
+      <h2>Registrations</h2>
+      <div class="f">
+        <input id="q" placeholder="Search name / email / phone" /><select
+          id="fp"
+        >
+          <option value="">All passes</option>
+        </select>
+        <select id="fs">
+          <option value="">All payments</option>
+          <option>paid</option>
+          <option>pending</option>
+          <option>failed</option>
+        </select>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Pass</th>
+              <th>State</th>
+              <th>Committed</th>
+              <th>Payment</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody id="rg"></tbody>
+        </table>
+      </div>
+      <h2>Latest activity</h2>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Event</th>
+              <th>Pass</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="ev"></tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) =>
+        String(s == null ? "" : s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const dt = (s) =>
+        s
+          ? new Date(s).toLocaleString("en-IN", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })
+          : "";
+      const src = (r) => (r.utm && r.utm.utm_source) || "direct";
+      let D = null;
+      async function load() {
+        const r = await fetch("/api/admin-data");
+        if (r.status === 401) {
+          $("app").hidden = true;
+          $("lf").hidden = false;
+          return;
+        }
+        if (!r.ok) {
+          $("le").textContent = "Could not load data.";
+          return;
+        }
+        D = await r.json();
+        $("lf").hidden = true;
+        $("app").hidden = false;
+        $("tot").innerHTML = [
+          ["Registered", D.totals.registered],
+          ["Paid", D.totals.paid],
+          ["Unpaid", D.totals.registered - D.totals.paid],
+          ["Revenue", "Rs " + D.totals.revenue.toLocaleString("en-IN")],
+        ]
+          .map((x) => `<div class="c"><b>${x[1]}</b><span>${x[0]}</span></div>`)
+          .join("");
+        $("bp").innerHTML = D.byPass
+          .map(
+            (p) =>
+              `<tr><td>${esc(p.pass)}</td><td>${p.clicks}</td><td>${p.selected}</td><td>${p.registered}</td><td>${p.paid}</td><td>Rs ${p.revenue.toLocaleString("en-IN")}</td></tr>`,
+          )
+          .join("");
+        if ($("fp").options.length < 2)
+          D.byPass.forEach((p) => $("fp").add(new Option(p.pass, p.pass)));
+        $("ev").innerHTML = D.recent
+          .map(
+            (e) =>
+              `<tr><td>${dt(e.at)}</td><td>${esc(e.event)}</td><td>${esc(e.pass)}</td><td>${esc(e.email)}</td></tr>`,
+          )
+          .join("");
+        draw();
+      }
+      function rows() {
+        const q = $("q").value.toLowerCase(),
+          p = $("fp").value,
+          s = $("fs").value;
+        return D.regs.filter(
+          (r) =>
+            (!p || r.pass === p) &&
+            (!s || r.paymentStatus === s) &&
+            (!q ||
+              [r.name, r.email, r.phone].join(" ").toLowerCase().includes(q)),
+        );
+      }
+      function draw() {
+        $("rg").innerHTML =
+          rows()
+            .map(
+              (r) =>
+                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${esc(r.paymentStatus)}">${esc(r.paymentStatus)}</span></td><td>${esc(src(r))}</td></tr>`,
+            )
+            .join("") || '<tr><td colspan="9">No results</td></tr>';
+      }
+      ["q", "fp", "fs"].forEach((i) =>
+        $(i).addEventListener("input", () => {
+          if (D) draw();
+        }),
+      );
+      $("lf").onsubmit = async (e) => {
+        e.preventDefault();
+        $("le").textContent = "";
+        const r = await fetch("/api/admin-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: $("em").value,
+            password: $("pw").value,
+          }),
+        });
+        if (r.ok) {
+          $("pw").value = "";
+          load();
+        } else $("le").textContent = "Invalid email or password.";
+      };
+      $("rf").onclick = load;
+      $("lo").onclick = async () => {
+        await fetch("/api/admin-login", { method: "DELETE" });
+        D = null;
+        $("app").hidden = true;
+        $("lf").hidden = false;
+      };
+      $("csv").onclick = () => {
+        const h = [
+          "createdAt",
+          "name",
+          "email",
+          "phone",
+          "pass",
+          "state",
+          "committed",
+          "paymentStatus",
+          "amountPaid",
+          "paidAt",
+          "source",
+        ];
+        const c = (v) => {
+          v = String(v == null ? "" : v);
+          if (/^[=+\-@]/.test(v)) v = "'" + v;
+          return '"' + v.replace(/"/g, '""') + '"';
+        };
+        const t = [h.join(",")]
+          .concat(
+            rows().map((r) =>
+              h.map((k) => c(k === "source" ? src(r) : r[k])).join(","),
+            ),
+          )
+          .join("\n");
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([t], { type: "text/csv" }));
+        a.download = "registrations.csv";
+        a.click();
+      };
+      load();
+    </script>
+  </body>
+</html>

@@ -1265,6 +1265,17 @@
                 <input id="rPhone" name="phone" type="tel" inputmode="numeric" maxlength="10" minlength="10" pattern="[0-9]{10}" placeholder="9876543210" autocomplete="tel-national" title="Enter exactly 10 digits" required />
               </div>
     
+              <div id="partnerBox" hidden>
+                <label for="pName">Partner's full name *</label>
+                <input id="pName" name="partnerName" type="text" placeholder="Your partner's full name" autocomplete="off" disabled />
+
+                <label for="pEmail">Partner's email (optional)</label>
+                <input id="pEmail" name="partnerEmail" type="email" placeholder="partner@example.com" autocomplete="off" disabled />
+
+                <label for="pPhone">Partner's phone number *</label>
+                <input id="pPhone" name="partnerPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="9876543210" autocomplete="off" disabled />
+              </div>
+
               <label for="rState">State *</label>
               <select id="rState" name="state" required>
                 <option value="">Select state</option>

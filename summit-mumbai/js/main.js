@@ -67,8 +67,14 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
     // Pass "Book Now" buttons scroll here with that pass preselected
     document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>{document.getElementById("rPass").value=a.dataset.pass}));
     // Phone: digits only, max 10 (also handles paste)
-    const ph=document.getElementById("rPhone");
-    if(ph)ph.addEventListener("input",()=>{const v=ph.value.replace(/\D/g,"").slice(0,10);if(ph.value!==v)ph.value=v});
+    for(const id of ["rPhone","pPhone"]){const ph=document.getElementById(id);
+      if(ph)ph.addEventListener("input",()=>{const v=ph.value.replace(/\D/g,"").slice(0,10);if(ph.value!==v)ph.value=v})}
+    // Couple pass: also collect the partner's details
+    const pass=document.getElementById("rPass"),pbox=document.getElementById("partnerBox");
+    const syncPartner=()=>{const on=pass.value==="Couple";pbox.hidden=!on;pbox.querySelectorAll("input").forEach(i=>{i.disabled=!on;if(!on)i.value=""})};
+    pass.addEventListener("change",syncPartner);
+    document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>setTimeout(syncPartner,0)));
+    syncPartner();
     f.addEventListener("submit",async e=>{e.preventDefault();show("");
       const d=Object.fromEntries(new FormData(f).entries());
       f.querySelectorAll("[aria-invalid]").forEach(x=>x.removeAttribute("aria-invalid"));
@@ -77,13 +83,19 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
       if(!(d.name||"").trim())return bad("rName","Please enter your full name.");
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email||""))return bad("rEmail","Please enter a valid email address.");
       if(phone.length!==10)return bad("rPhone","Please enter a valid 10-digit phone number.");
+      const couple=d.pass==="Couple",pPhone=(d.partnerPhone||"").replace(/\D/g,"");
+      if(couple){
+        if(!(d.partnerName||"").trim())return bad("pName","Please enter your partner's full name.");
+        if(d.partnerEmail&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.partnerEmail))return bad("pEmail","Please enter a valid partner email or leave it blank.");
+        if(pPhone.length!==10)return bad("pPhone","Please enter your partner's 10-digit phone number.");
+      }
       if(!d.state)return bad("rState","Please select your state.");
       if(!d.commit)return show("Please tell us if you are committed to attending.");
       if(!d.consent)return bad("rConsent","Please tick the consent box to continue.");
       btn.disabled=true;
       // Open the tab now (inside the click gesture) so popup blockers allow it; point it at payment after the webhook call
       const payWin=PAYMENT_URLS[d.pass]?window.open("","_blank"):null;
-      const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
+      const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,...(couple?{partnerName:d.partnerName.trim(),partnerEmail:(d.partnerEmail||"").trim(),partnerPhone:d.cc+pPhone}:{}),consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
       api("register",{...payload,referrer:document.referrer});
       try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",mode:"no-cors",body:new URLSearchParams(Object.entries(payload).map(([k,v])=>[k,String(v)])),keepalive:true})}catch(_){}
       const url=PAYMENT_URLS[d.pass];
