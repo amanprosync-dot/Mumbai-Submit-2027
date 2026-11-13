@@ -1,6 +1,7 @@
 /* The Grand E-Com Summit — Mumbai 2027 | scripts */
 /* ===== CONFIG — set these before going live ===== */
 const FORM_ENDPOINT = "https://connect.pabbly.com/webhook-listener/webhook/IjU3NjYwNTZmMDYzNjA0Mzc1MjY1NTUzMyI_3D_pc/IjU3NjcwNTZiMDYzNTA0Mzc1MjY0NTUzNjUxMzUi_pc";   // Pabbly webhook; e.g. your FlexiFunnels / CRM webhook URL (receives JSON POST)
+const API_BASE = "";        // "" = same domain (Vercel). Set a full URL if the API is hosted elsewhere. Stores leads/events in MongoDB.
 const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to show a confirmation message instead
   Women: "https://rzp.io/rzp/NclhUxo",
   Men: "https://rzp.io/rzp/J5TWbOT",
@@ -56,6 +57,13 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
   (()=>{const f=document.getElementById("regForm");if(!f)return;
     const err=document.getElementById("regError"),btn=document.getElementById("regBtn");
     const show=m=>{err.textContent=m;err.hidden=!m};
+    // Funnel tracking -> MongoDB (fire-and-forget, never blocks the form)
+    let sid="";try{sid=localStorage.getItem("sid")||"";if(!sid){sid=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));localStorage.setItem("sid",sid)}}catch(_){sid=sid||String(Date.now())}
+    const utm={};new URLSearchParams(location.search).forEach((v,k)=>{if(/^(utm_|fbclid|gclid)/.test(k))utm[k]=v});
+    const api=(path,data)=>{try{fetch(API_BASE+"/api/"+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...data,sessionId:sid,utm,page:location.href}),keepalive:true}).catch(()=>{})}catch(_){}};
+    document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>api("track",{event:"pass_click",pass:a.dataset.pass})));
+    document.getElementById("rPass")?.addEventListener("change",e=>api("track",{event:"pass_selected",pass:e.target.value}));
+    f.addEventListener("focusin",()=>api("track",{event:"form_start",pass:document.getElementById("rPass").value}),{once:true});
     // Pass "Book Now" buttons scroll here with that pass preselected
     document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>{document.getElementById("rPass").value=a.dataset.pass}));
     // Phone: digits only, max 10 (also handles paste)
@@ -76,8 +84,10 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
       // Open the tab now (inside the click gesture) so popup blockers allow it; point it at payment after the webhook call
       const payWin=PAYMENT_URLS[d.pass]?window.open("","_blank"):null;
       const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
+      api("register",{...payload,referrer:document.referrer});
       try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",mode:"no-cors",body:new URLSearchParams(Object.entries(payload).map(([k,v])=>[k,String(v)])),keepalive:true})}catch(_){}
       const url=PAYMENT_URLS[d.pass];
+      if(url)api("track",{event:"payment_redirect",pass:d.pass,email:payload.email});
       if(url){const u=new URL(url);u.searchParams.set("name",payload.name);u.searchParams.set("email",payload.email);u.searchParams.set("contact",payload.phone);
         const href=u.toString();
         if(payWin&&!payWin.closed)payWin.location.href=href;else window.open(href,"_blank")||(location.href=href);
