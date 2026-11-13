@@ -1,6 +1,6 @@
 /* The Grand E-Com Summit — Mumbai 2027 | scripts */
 /* ===== CONFIG — set these before going live ===== */
-const FORM_ENDPOINT = "";   // e.g. your FlexiFunnels / CRM webhook URL (receives JSON POST)
+const FORM_ENDPOINT = "https://connect.pabbly.com/webhook-listener/webhook/IjU3NjYwNTZmMDYzNjA0Mzc1MjY1NTUzMyI_3D_pc/IjU3NjcwNTZiMDYzNTA0Mzc1MjY0NTUzNjUxMzUi_pc";   // Pabbly webhook; e.g. your FlexiFunnels / CRM webhook URL (receives JSON POST)
 const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to show a confirmation message instead
   Women: "https://rzp.io/rzp/NclhUxo",
   Men: "https://rzp.io/rzp/J5TWbOT",
@@ -76,7 +76,7 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
       // Open the tab now (inside the click gesture) so popup blockers allow it; point it at payment after the webhook call
       const payWin=PAYMENT_URLS[d.pass]?window.open("","_blank"):null;
       const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
-      try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),keepalive:true})}catch(_){}
+      try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",mode:"no-cors",body:new URLSearchParams(Object.entries(payload).map(([k,v])=>[k,String(v)])),keepalive:true})}catch(_){}
       const url=PAYMENT_URLS[d.pass];
       if(url){const u=new URL(url);u.searchParams.set("name",payload.name);u.searchParams.set("email",payload.email);u.searchParams.set("contact",payload.phone);
         const href=u.toString();
