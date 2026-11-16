@@ -30,6 +30,7 @@ function initChallengesX() {
     var current = 0;
     var timer = null;
     var hovering = false;
+    var hoverTimer = null;
 
     function setActive(i) {
         current = i;
@@ -59,8 +60,13 @@ function initChallengesX() {
     for (var i = 0; i < panels.length; i++) {
         (function (n) {
             panels[n].addEventListener('mouseenter', function () {
-                if (window.innerWidth > 860) { hovering = true; stopAuto(); setActive(n); }
+                if (window.innerWidth <= 860) { return; }
+                hovering = true; stopAuto();
+                /* small intent delay so panels resizing under the cursor don't cause flicker */
+                clearTimeout(hoverTimer);
+                hoverTimer = setTimeout(function () { if (current !== n) { setActive(n); } }, 90);
             });
+            panels[n].addEventListener('mouseleave', function () { clearTimeout(hoverTimer); });
             panels[n].addEventListener('focus', function () { hovering = true; stopAuto(); setActive(n); });
             panels[n].addEventListener('click', function () { hovering = true; stopAuto(); setActive(n); });
         })(i);
