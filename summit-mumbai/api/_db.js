@@ -5,4 +5,5 @@ module.exports = async function db() {
   if (!cached) cached = new MongoClient(process.env.MONGODB_URI, { maxPoolSize: 5 }).connect();
   return (await cached).db(process.env.MONGODB_DB || "summit_mumbai_2027");
 };
-module.exports.PASSES = ["Women", "Men", "Couple", "VIP"];
+module.exports.PASSES = ["Women", "Men", "Couple", "VIP", "VIP Couple"];
+module.exports.COUPLE_PASSES = ["Couple", "VIP Couple"];

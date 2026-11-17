@@ -11,7 +11,7 @@ Deploy
 
 Before going live — edit the top of js/main.js:
   FORM_ENDPOINT  Webhook/CRM URL that receives the registration as a JSON POST.
-  PAYMENT_URLS   Payment link per pass (Women, Men, Couple, VIP). Name, email and
+  PAYMENT_URLS   Payment link per pass (Women, Men, Couple, VIP, VIP Couple). Name, email and
                  phone are appended as query parameters. If left empty, the form
                  shows a thank-you message instead of redirecting.
 

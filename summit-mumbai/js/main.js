@@ -6,8 +6,10 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
   Women: "https://rzp.io/rzp/NclhUxo",
   Men: "https://rzp.io/rzp/J5TWbOT",
   Couple: "https://rzp.io/rzp/03ahbKZG",
-  VIP: "https://rzp.io/rzp/LXdR7KJk"
+  VIP: "https://rzp.io/rzp/LXdR7KJk",
+  "VIP Couple": "https://rzp.io/rzp/LLwQClO"
 };
+const COUPLE_PASSES = ["Couple", "VIP Couple"]; // passes that also collect the partner's details
 
 (function(){
   // Sticky mobile CTA
@@ -71,7 +73,7 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
       if(ph)ph.addEventListener("input",()=>{const v=ph.value.replace(/\D/g,"").slice(0,10);if(ph.value!==v)ph.value=v})}
     // Couple pass: also collect the partner's details
     const pass=document.getElementById("rPass"),pbox=document.getElementById("partnerBox");
-    const syncPartner=()=>{const on=pass.value==="Couple";pbox.hidden=!on;pbox.querySelectorAll("input").forEach(i=>{i.disabled=!on;if(!on)i.value=""})};
+    const syncPartner=()=>{const on=COUPLE_PASSES.includes(pass.value);pbox.hidden=!on;pbox.querySelectorAll("input").forEach(i=>{i.disabled=!on;if(!on)i.value=""})};
     pass.addEventListener("change",syncPartner);
     document.querySelectorAll("a[data-pass]").forEach(a=>a.addEventListener("click",()=>setTimeout(syncPartner,0)));
     syncPartner();
@@ -83,7 +85,7 @@ const PAYMENT_URLS = {      // Razorpay / payment page per pass; leave "" to sho
       if(!(d.name||"").trim())return bad("rName","Please enter your full name.");
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email||""))return bad("rEmail","Please enter a valid email address.");
       if(phone.length!==10)return bad("rPhone","Please enter a valid 10-digit phone number.");
-      const couple=d.pass==="Couple",pPhone=(d.partnerPhone||"").replace(/\D/g,"");
+      const couple=COUPLE_PASSES.includes(d.pass),pPhone=(d.partnerPhone||"").replace(/\D/g,"");
       if(couple){
         if(!(d.partnerName||"").trim())return bad("pName","Please enter your partner's full name.");
         if(d.partnerEmail&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.partnerEmail))return bad("pEmail","Please enter a valid partner email or leave it blank.");
