@@ -87,21 +87,30 @@
       .pwrap input {
         padding-right: 44px;
       }
-      .eye {
+      .pwrap .eye {
         position: absolute;
-        right: 6px;
+        right: 8px;
         top: 50%;
         transform: translateY(-50%);
-        background: none;
+        background: transparent;
         border: 0;
-        padding: 6px;
+        border-radius: 6px;
+        padding: 4px;
+        width: auto;
         cursor: pointer;
-        color: inherit;
+        color: #374151;
         display: flex;
-        opacity: 0.7;
-      }
-      .eye:hover {
         opacity: 1;
+      }
+      .pwrap .eye:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .pwrap .eye svg {
+        stroke: currentColor;
+        display: block;
+      }
+      .pwrap .eye svg[hidden] {
+        display: none;
       }
       .err {
         color: var(--bad);
