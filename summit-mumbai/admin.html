@@ -341,7 +341,7 @@
         }
       }
       async function loadData() {
-        const r = await fetch("/api/admin-data");
+        const r = await fetch("/api/admin-data", { cache: "no-store" });
         if (r.status === 401) {
           $("app").hidden = true;
           $("lf").hidden = false;

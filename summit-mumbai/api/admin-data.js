@@ -2,6 +2,7 @@ const db = require("./_db");
 const { isAdmin } = require("./_auth");
 
 module.exports = async (req, res) => {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
   if (!isAdmin(req)) return res.status(401).json({ ok: false });
   try {
     const d = await db();
