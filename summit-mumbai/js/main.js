@@ -99,6 +99,7 @@ const COUPLE_PASSES = ["Couple", "VIP Couple"]; // passes that also collect the 
       const payWin=PAYMENT_URLS[d.pass]?window.open("","_blank"):null;
       const payload={pass:d.pass,name:d.name.trim(),email:d.email.trim(),phone:d.cc+phone,state:d.state,committed:d.commit,...(couple?{partnerName:d.partnerName.trim(),partnerEmail:(d.partnerEmail||"").trim(),partnerPhone:d.cc+pPhone}:{}),consent:true,consentAt:new Date().toISOString(),source:"mumbai-2027"};
       api("register",{...payload,referrer:document.referrer});
+      try{localStorage.setItem("lastReg",JSON.stringify({email:payload.email,pass:payload.pass,at:Date.now()}))}catch(_){}
       try{if(FORM_ENDPOINT)await fetch(FORM_ENDPOINT,{method:"POST",mode:"no-cors",body:new URLSearchParams(Object.entries(payload).map(([k,v])=>[k,String(v)])),keepalive:true})}catch(_){}
       const url=PAYMENT_URLS[d.pass];
       if(url)api("track",{event:"payment_redirect",pass:d.pass,email:payload.email});

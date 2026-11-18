@@ -430,7 +430,7 @@
           rows()
             .map(
               (r) =>
-                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${cls(st(r))}">${st(r)}</span></td><td>${esc(src(r))}</td></tr>`,
+                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${cls(st(r))}">${st(r)}</span>${r.paid && r.paymentSource === "thankyou" ? `<br><small>via thank-you page${r.paymentVerified ? "" : " (unverified)"}</small>` : ""}</td><td>${esc(src(r))}</td></tr>`,
             )
             .join("") || '<tr><td colspan="9">No results</td></tr>';
       }

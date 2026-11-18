@@ -41,6 +41,13 @@ module.exports = async (req, res) => {
         const r = await d.collection("registrations").findOneAndUpdate({ ...m, paid: false }, upd, { sort: { lastSubmittedAt: -1 } });
         if (r && (r.value ?? r)) { matched = true; break; }
       }
+      // The thank-you page fallback may have marked it paid first: the webhook is the source of truth, so overwrite with real values
+      if (paid && !matched) {
+        for (const m of tries) {
+          const r = await d.collection("registrations").findOneAndUpdate({ ...m, paid: true, paymentSource: "thankyou" }, { $set: { ...upd.$set, paymentSource: "webhook", paymentVerified: true } }, { sort: { lastSubmittedAt: -1 } });
+          if (r && (r.value ?? r)) { matched = true; break; }
+        }
+      }
       // Already-paid registration (e.g. an earlier/test payment marked it paid) and this is a NEW payment:
       // record its id and real amount on the latest registration instead of dropping it, so revenue stays correct.
       if (paid && !matched && pay.id) {

@@ -9,8 +9,11 @@ module.exports = async (req, res) => {
     const rawRegs = await d.collection("registrations").find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).limit(5000).toArray();
     // The payments collection is the source of truth: a registration only counts as paid (and its revenue)
     // if a matching payment record exists. A leftover "paid" flag with no payment behind it shows as unpaid, Rs 0.
-    const payRows = await d.collection("payments").find({ event: { $in: ["payment_link.paid", "payment.captured"] } }, { projection: { _id: 0, paymentId: 1, amount: 1 } }).toArray();
-    const payAmt = new Map(payRows.filter((x) => x.paymentId).map((x) => [x.paymentId, x.amount || 0]));
+    const payRows = await d.collection("payments").find({ event: { $in: ["payment_link.paid", "payment.captured", "thankyou_confirmed"] } }, { projection: { _id: 0, paymentId: 1, amount: 1, event: 1 } }).toArray();
+    // thank-you-page records are only a fallback: for the same paymentId the webhook amount wins
+    const payAmt = new Map();
+    payRows.filter((x) => x.paymentId && x.event === "thankyou_confirmed").forEach((x) => payAmt.set(x.paymentId, x.amount || 0));
+    payRows.filter((x) => x.paymentId && x.event !== "thankyou_confirmed").forEach((x) => payAmt.set(x.paymentId, x.amount || 0));
     const regs = rawRegs.map((r) => {
       if (r.paid && payAmt.has(r.paymentId)) return { ...r, amountPaid: payAmt.get(r.paymentId) };
       if (r.paid || r.paymentStatus === "paid") return { ...r, paid: false, paymentStatus: null, amountPaid: 0 };

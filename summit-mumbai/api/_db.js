@@ -6,4 +6,5 @@ module.exports = async function db() {
   return (await cached).db(process.env.MONGODB_DB || "summit_mumbai_2027");
 };
 module.exports.PASSES = ["Women", "Men", "Couple", "VIP", "VIP Couple"];
+module.exports.PRICES = { Women: 4995, Men: 5995, Couple: 9995, VIP: 9995, "VIP Couple": 14995 }; // INR, keep in sync with index.html
 module.exports.COUPLE_PASSES = ["Couple", "VIP Couple"];

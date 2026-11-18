@@ -147,6 +147,14 @@
           document.getElementById("refId").textContent = id;
           document.getElementById("ref").style.display = "block";
         }
+        // Fallback payment recording (the Razorpay webhook has priority on the server)
+        if (p.get("razorpay_payment_id") && p.get("razorpay_payment_link_status") === "paid") {
+          var email = "", sid = "";
+          try { email = (JSON.parse(localStorage.getItem("lastReg") || "{}").email) || ""; sid = localStorage.getItem("sid") || ""; } catch (e) {}
+          var body = { email: email, sessionId: sid };
+          ["razorpay_payment_id", "razorpay_payment_link_id", "razorpay_payment_link_reference_id", "razorpay_payment_link_status", "razorpay_signature"].forEach(function (k) { body[k] = p.get(k) || ""; });
+          try { fetch("/api/payment-confirm", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive: true }).catch(function () {}); } catch (e) {}
+        }
       })();
     </script>
   </body>
