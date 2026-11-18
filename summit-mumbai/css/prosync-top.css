@@ -236,10 +236,10 @@
     overflow: hidden;
 }
 
-/* Mobile: the photo is landscape, so center the crop on the stage (right of image) */
+/* Mobile: the photo is landscape, so anchor the crop to the far left of the image */
 @media (max-width: 768px) {
     .cover {
-        background-position: 72% 30%;
+        background-position: 40% 30%;
     }
 
     .cover-overlay {
