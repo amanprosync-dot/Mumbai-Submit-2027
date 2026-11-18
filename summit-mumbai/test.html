@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Payment Test</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#0b1220;color:#e8eefc;margin:0;padding:24px}
+  .card{max-width:460px;margin:40px auto;background:#131c30;border:1px solid #243049;border-radius:14px;padding:24px}
+  h1{font-size:20px;margin:0 0 4px}
+  p.sub{color:#8fa0c4;font-size:13px;margin:0 0 18px}
+  label{display:block;font-size:13px;margin:12px 0 4px;color:#b8c4e0}
+  input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid #2b3a58;background:#0b1220;color:#fff;font-size:15px}
+  button{margin-top:18px;width:100%;padding:12px;border:0;border-radius:8px;background:#1f7aff;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6}
+  #log{margin-top:18px;font:12px/1.5 ui-monospace,Consolas,monospace;background:#0b1220;border:1px solid #243049;border-radius:8px;padding:10px;white-space:pre-wrap;min-height:60px}
+  .warn{background:#3a2a10;border:1px solid #6b4a14;color:#ffd98a;font-size:12px;padding:8px 10px;border-radius:8px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Payment flow test</h1>
+  <p class="sub">Runs the same steps as the live form: save registration, then open the Razorpay link.</p>
+  <div class="warn">Test only. Saves a registration (pass "Men", source "payment-test") and opens a real payment link.</div>
+  <form id="f">
+    <label>Name</label><input id="name" required>
+    <label>Email</label><input id="email" type="email" required>
+    <label>Phone (10 digits)</label><input id="phone" inputmode="numeric" maxlength="10" required>
+    <button id="btn" type="submit">Register &amp; open payment link</button>
+  </form>
+  <div id="log">Waiting…</div>
+</div>
+<script>
+const PAY_URL = "https://rzp.io/rzp/D2pRbAu0";
+const log = (m) => { const l = document.getElementById("log"); l.textContent += "\n" + m; };
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("btn"); btn.disabled = true;
+  document.getElementById("log").textContent = "Starting…";
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.replace(/\D/g, "").slice(-10);
+  const win = window.open("", "_blank"); // open inside the click so popup blockers allow it
+  try {
+    const r = await fetch("/api/register", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pass: "Men", name, email, phone: "+91" + phone, state: "Test", committed: "yes", consent: true, consentAt: new Date().toISOString(), source: "payment-test" })
+    });
+    log("POST /api/register -> " + r.status + " " + JSON.stringify(await r.json().catch(() => ({}))));
+  } catch (err) { log("register failed: " + err.message); }
+  const u = new URL(PAY_URL);
+  u.searchParams.set("name", name); u.searchParams.set("email", email); u.searchParams.set("contact", "+91" + phone);
+  log("Opening: " + u);
+  if (win && !win.closed) win.location.href = u.toString(); else window.open(u.toString(), "_blank");
+  log("\nAfter paying, check: Razorpay > Webhooks delivery log, Vercel logs for /api/razorpay-webhook, and the registration's paid flag.");
+  btn.disabled = false;
+});
+</script>
+</body>
+</html>

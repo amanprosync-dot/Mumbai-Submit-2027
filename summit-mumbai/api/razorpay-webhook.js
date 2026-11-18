@@ -27,13 +27,19 @@ module.exports = async (req, res) => {
 
     await d.collection("payments").insertOne({ event: evt.event, paymentId: pay.id || null, linkId: link.id || null, amount: (pay.amount || link.amount_paid || 0) / 100, status: pay.status || link.status || null, email, phone10, receivedAt: now, raw: evt });
 
-    if ((paid || failed) && email) {
-      const match = { email }; // match on payer email only
+    if ((paid || failed) && (email || phone10.length === 10)) {
       // paid: mark the latest unpaid registration; failed: just record it, never downgrade a paid one
       const upd = paid
         ? { $set: { paid: true, paymentStatus: "paid", paidAt: now, paymentId: pay.id || null, amountPaid: (pay.amount || link.amount_paid || 0) / 100, updatedAt: now } }
         : { $set: { paymentStatus: "failed", lastPaymentFailedAt: now, updatedAt: now } };
-      await d.collection("registrations").findOneAndUpdate({ ...match, paid: false }, upd, { sort: { lastSubmittedAt: -1 } });
+      // The payer can edit the prefilled email/phone on the Razorpay page, so try email first, then fall back to phone
+      const tries = [];
+      if (email) tries.push({ email });
+      if (phone10.length === 10) tries.push({ phone10 });
+      for (const m of tries) {
+        const r = await d.collection("registrations").findOneAndUpdate({ ...m, paid: false }, upd, { sort: { lastSubmittedAt: -1 } });
+        if (r && (r.value ?? r)) break;
+      }
     }
     res.status(200).json({ ok: true });
   } catch (e) {
