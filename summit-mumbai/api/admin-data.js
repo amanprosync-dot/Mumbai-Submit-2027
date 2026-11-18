@@ -6,7 +6,16 @@ module.exports = async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ ok: false });
   try {
     const d = await db();
-    const regs = await d.collection("registrations").find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).limit(5000).toArray();
+    const rawRegs = await d.collection("registrations").find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).limit(5000).toArray();
+    // The payments collection is the source of truth: a registration only counts as paid (and its revenue)
+    // if a matching payment record exists. A leftover "paid" flag with no payment behind it shows as unpaid, Rs 0.
+    const payRows = await d.collection("payments").find({ event: { $in: ["payment_link.paid", "payment.captured"] } }, { projection: { _id: 0, paymentId: 1, amount: 1 } }).toArray();
+    const payAmt = new Map(payRows.filter((x) => x.paymentId).map((x) => [x.paymentId, x.amount || 0]));
+    const regs = rawRegs.map((r) => {
+      if (r.paid && payAmt.has(r.paymentId)) return { ...r, amountPaid: payAmt.get(r.paymentId) };
+      if (r.paid || r.paymentStatus === "paid") return { ...r, paid: false, paymentStatus: null, amountPaid: 0 };
+      return r;
+    });
     const ev = await d.collection("events").aggregate([
       { $match: { pass: { $ne: null } } },
       { $group: { _id: { pass: "$pass", event: "$event" }, sessions: { $addToSet: "$sessionId" } } },
