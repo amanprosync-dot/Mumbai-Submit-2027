@@ -334,7 +334,7 @@
         try {
           await loadData();
         } catch (e) {
-          st8.textContent = "Fetch failed. Check your connection and try again.";
+          zeroOut("Fetch failed. Check your connection and try again. Showing zeros.");
         } finally {
           btn.disabled = false;
           btn.textContent = "Fetch data";
@@ -349,7 +349,7 @@
         }
         if (!r.ok) {
           $("le").textContent = "Could not load data.";
-          $("fst").textContent = "Could not load data from the database.";
+          zeroOut("Could not load data from the database. Showing zeros.");
           return;
         }
         D = await r.json();
@@ -360,6 +360,25 @@
           new Date().toLocaleTimeString("en-IN", { timeStyle: "short" });
         $("lf").hidden = true;
         $("app").hidden = false;
+        render();
+      }
+      // Data could not be fetched: reset every number to 0 and clear the tables
+      // (only when the dashboard is already showing; on the login screen there is nothing to reset)
+      const PASS_NAMES = ["Women", "Men", "Couple", "VIP", "VIP Couple"];
+      function zeroOut(msg) {
+        if ($("app").hidden) return;
+        D = {
+          totals: { registered: 0, paid: 0, revenue: 0 },
+          byPass: (D && D.byPass ? D.byPass.map((p) => p.pass) : PASS_NAMES).map((pass) => ({
+            pass, clicks: 0, selected: 0, registered: 0, paid: 0, revenue: 0,
+          })),
+          regs: [],
+          recent: [],
+        };
+        $("fst").textContent = msg;
+        render();
+      }
+      function render() {
         $("tot").innerHTML = [
           ["Registered", D.totals.registered],
           ["Paid", D.totals.paid],

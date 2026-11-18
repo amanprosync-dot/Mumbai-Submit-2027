@@ -36,9 +36,18 @@ module.exports = async (req, res) => {
       const tries = [];
       if (email) tries.push({ email });
       if (phone10.length === 10) tries.push({ phone10 });
+      let matched = false;
       for (const m of tries) {
         const r = await d.collection("registrations").findOneAndUpdate({ ...m, paid: false }, upd, { sort: { lastSubmittedAt: -1 } });
-        if (r && (r.value ?? r)) break;
+        if (r && (r.value ?? r)) { matched = true; break; }
+      }
+      // Already-paid registration (e.g. an earlier/test payment marked it paid) and this is a NEW payment:
+      // record its id and real amount on the latest registration instead of dropping it, so revenue stays correct.
+      if (paid && !matched && pay.id) {
+        for (const m of tries) {
+          const r = await d.collection("registrations").findOneAndUpdate({ ...m, paid: true, paymentId: { $ne: pay.id } }, upd, { sort: { lastSubmittedAt: -1 } });
+          if (r && (r.value ?? r)) break;
+        }
       }
     }
     res.status(200).json({ ok: true });
