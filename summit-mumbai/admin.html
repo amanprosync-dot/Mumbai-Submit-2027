@@ -179,6 +179,15 @@
         margin: 8px 0;
         flex-wrap: wrap;
       }
+      .mu {
+        color: var(--mu);
+        font-size: 13px;
+        margin-right: 8px;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
       [hidden] {
         display: none !important;
       }
@@ -215,7 +224,8 @@
       <div class="bar">
         <h1>Mumbai Summit 2027 - Leads</h1>
         <div>
-          <button id="rf">Refresh</button> <button id="csv">Export CSV</button>
+          <span id="fst" class="mu"></span>
+          <button id="rf">Fetch data</button> <button id="csv">Export CSV</button>
           <button id="lo">Log out</button>
         </div>
       </div>
@@ -317,6 +327,20 @@
       const src = (r) => (r.utm && r.utm.utm_source) || "direct";
       let D = null;
       async function load() {
+        const btn = $("rf"),
+          st8 = $("fst");
+        btn.disabled = true;
+        btn.textContent = "Fetching…";
+        try {
+          await loadData();
+        } catch (e) {
+          st8.textContent = "Fetch failed. Check your connection and try again.";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Fetch data";
+        }
+      }
+      async function loadData() {
         const r = await fetch("/api/admin-data");
         if (r.status === 401) {
           $("app").hidden = true;
@@ -325,9 +349,15 @@
         }
         if (!r.ok) {
           $("le").textContent = "Could not load data.";
+          $("fst").textContent = "Could not load data from the database.";
           return;
         }
         D = await r.json();
+        $("fst").textContent =
+          "Fetched " +
+          D.totals.registered +
+          " registrations at " +
+          new Date().toLocaleTimeString("en-IN", { timeStyle: "short" });
         $("lf").hidden = true;
         $("app").hidden = false;
         $("tot").innerHTML = [
