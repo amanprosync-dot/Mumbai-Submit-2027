@@ -274,6 +274,7 @@
               <th>State</th>
               <th>Committed</th>
               <th>Payment</th>
+              <th>Verified by</th>
               <th>Source</th>
             </tr>
           </thead>
@@ -411,6 +412,16 @@
         const t = new Date(r.lastSubmittedAt || r.createdAt).getTime();
         return Date.now() - t < WAIT_MS ? "Awaiting payment" : "Not paid";
       }
+      // Which confirmation paths have verified this payment: Razorpay webhook and/or the thank-you page fallback
+      function ver(r) {
+        if (!r.paid) return "-";
+        const w = !!r.confirmWebhook,
+          t = !!r.confirmThankyou;
+        if (w && t) return '<span class="tag paid">Both ✓</span>';
+        if (w) return '<span class="tag pending">Webhook only</span>';
+        if (t) return '<span class="tag pending">Thank-you page only</span>';
+        return "-";
+      }
       const cls = (s) => ({ Paid: "paid", Failed: "failed", "Awaiting payment": "pending", "Not paid": "failed" })[s];
       setInterval(() => { if (D) load(); }, 30000);
       function rows() {
@@ -430,9 +441,9 @@
           rows()
             .map(
               (r) =>
-                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${cls(st(r))}">${st(r)}</span>${r.paid && r.paymentSource === "thankyou" ? `<br><small>via thank-you page${r.paymentVerified ? "" : " (unverified)"}</small>` : ""}</td><td>${esc(src(r))}</td></tr>`,
+                `<tr><td>${dt(r.createdAt)}</td><td>${esc(r.name)}${r.partner ? `<br><small>+ ${esc(r.partner.name)}</small>` : ""}</td><td>${esc(r.email)}${r.partner && r.partner.email ? `<br><small>${esc(r.partner.email)}</small>` : ""}</td><td>${esc(r.phone)}${r.partner ? `<br><small>${esc(r.partner.phone)}</small>` : ""}</td><td>${esc(r.pass)}</td><td>${esc(r.state)}</td><td>${esc(r.committed)}</td><td><span class="tag ${cls(st(r))}">${st(r)}</span>${r.paid && r.paymentSource === "thankyou" ? `<br><small>via thank-you page${r.paymentVerified ? "" : " (unverified)"}</small>` : ""}</td><td>${ver(r)}</td><td>${esc(src(r))}</td></tr>`,
             )
-            .join("") || '<tr><td colspan="9">No results</td></tr>';
+            .join("") || '<tr><td colspan="10">No results</td></tr>';
       }
       ["q", "fp", "fs"].forEach((i) =>
         $(i).addEventListener("input", () => {
@@ -474,6 +485,7 @@
           "paymentStatus",
           "amountPaid",
           "paidAt",
+          "verifiedBy",
           "source",
         ];
         const c = (v) => {
@@ -484,7 +496,7 @@
         const t = [h.join(",")]
           .concat(
             rows().map((r) =>
-              h.map((k) => c(k === "source" ? src(r) : k === "paymentStatus" ? st(r) : r[k])).join(","),
+              h.map((k) => c(k === "source" ? src(r) : k === "paymentStatus" ? st(r) : k === "verifiedBy" ? (r.paid ? (r.confirmWebhook && r.confirmThankyou ? "Both" : r.confirmWebhook ? "Webhook only" : r.confirmThankyou ? "Thank-you page only" : "") : "") : r[k])).join(","),
             ),
           )
           .join("\n");

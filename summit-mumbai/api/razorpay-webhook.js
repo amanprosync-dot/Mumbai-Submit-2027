@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
     if ((paid || failed) && (email || phone10.length === 10)) {
       // paid: mark the latest unpaid registration; failed: just record it, never downgrade a paid one
       const upd = paid
-        ? { $set: { paid: true, paymentStatus: "paid", paidAt: now, paymentId: pay.id || null, amountPaid: (pay.amount || link.amount_paid || 0) / 100, updatedAt: now } }
+        ? { $set: { paid: true, paymentStatus: "paid", paidAt: now, paymentId: pay.id || null, amountPaid: (pay.amount || link.amount_paid || 0) / 100, webhookConfirmed: true, updatedAt: now } }
         : { $set: { paymentStatus: "failed", lastPaymentFailedAt: now, updatedAt: now } };
       // The payer can edit the prefilled email/phone on the Razorpay page, so try email first, then fall back to phone
       const tries = [];

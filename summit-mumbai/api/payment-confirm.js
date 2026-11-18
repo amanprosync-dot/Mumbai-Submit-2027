@@ -39,7 +39,11 @@ module.exports = async (req, res) => {
       reg = await d.collection("registrations").findOne({ ...m, paid: { $ne: true } }, { sort: { lastSubmittedAt: -1 } });
       if (reg) break;
     }
-    if (!reg) return res.status(200).json({ ok: true, skipped: "no-unpaid-registration" });
+    if (!reg) {
+      // Webhook already marked this payment paid: just note that the thank-you page confirmed it as well
+      const r = await d.collection("registrations").updateOne({ paymentId: payId }, { $set: { thankyouConfirmed: true, thankyouAt: new Date() } });
+      return res.status(200).json({ ok: true, skipped: r.matchedCount ? "webhook-already-recorded" : "no-unpaid-registration" });
+    }
 
     // Webhook has priority: if it already recorded this payment, or any paid payment for this person, do nothing
     const hook = await d.collection("payments").findOne({ event: { $in: ["payment_link.paid", "payment.captured"] }, $or: [{ paymentId: payId }, { email: reg.email }] });

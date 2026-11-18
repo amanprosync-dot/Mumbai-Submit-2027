@@ -14,9 +14,12 @@ module.exports = async (req, res) => {
     const payAmt = new Map();
     payRows.filter((x) => x.paymentId && x.event === "thankyou_confirmed").forEach((x) => payAmt.set(x.paymentId, x.amount || 0));
     payRows.filter((x) => x.paymentId && x.event !== "thankyou_confirmed").forEach((x) => payAmt.set(x.paymentId, x.amount || 0));
+    const hookIds = new Set(payRows.filter((x) => x.paymentId && x.event !== "thankyou_confirmed").map((x) => x.paymentId));
+    const tyIds = new Set(payRows.filter((x) => x.paymentId && x.event === "thankyou_confirmed").map((x) => x.paymentId));
     const regs = rawRegs.map((r) => {
-      if (r.paid && payAmt.has(r.paymentId)) return { ...r, amountPaid: payAmt.get(r.paymentId) };
-      if (r.paid || r.paymentStatus === "paid") return { ...r, paid: false, paymentStatus: null, amountPaid: 0 };
+      if (r.paid && payAmt.has(r.paymentId))
+        return { ...r, amountPaid: payAmt.get(r.paymentId), confirmWebhook: hookIds.has(r.paymentId), confirmThankyou: !!r.thankyouConfirmed || tyIds.has(r.paymentId) };
+      if (r.paid || r.paymentStatus === "paid") return { ...r, paid: false, paymentStatus: null, amountPaid: 0, confirmWebhook: false, confirmThankyou: false };
       return r;
     });
     const ev = await d.collection("events").aggregate([
