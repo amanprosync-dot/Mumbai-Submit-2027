@@ -137,8 +137,32 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
       })(window, document, "clarity", "script", "zffw6xsat9");
     </script>
+    <script>
+      if (Date.now() > new Date("2026-11-24T23:59:59+05:30").getTime())
+        document.documentElement.classList.add("eb-over");
+    </script>
   </head>
   <body id="top">
+    <div class="eb-bar" id="ebBar">
+      <span class="eb-msg"><i class="eb-dot"></i><b class="eb-tag">Early Bird Offer</b> is live — grab your summit pass at a <em>special price</em></span>
+      <a class="eb-btn" href="#passes">Get Passes <span>→</span></a>
+    </div>
+    <script>
+      (function () {
+        var bar = document.getElementById("ebBar");
+        function set() {
+          if (bar)
+            document.documentElement.style.setProperty(
+              "--eb-h",
+              bar.offsetHeight + "px"
+            );
+        }
+        set();
+        window.addEventListener("resize", set);
+        window.addEventListener("load", set);
+        if (window.ResizeObserver && bar) new ResizeObserver(set).observe(bar);
+      })();
+    </script>
     <nav class="navbar" id="navbar">
       <div class="nav-inner">
         <a
@@ -389,6 +413,8 @@
           </p>
         </div>
       </section>
+
+      
 
       <!-- ===== ONE SUMMIT ===== -->
       <section class="sec os">
@@ -1238,6 +1264,7 @@
 
           <div class="pgrid">
             <article class="pass feat rv">
+              <span class="eb-ribbon"><i class="eb-dot"></i> Early Bird Offer</span>
               <span class="ribbon">Women's Offer</span>
               <span class="pt">Pass 01</span>
               <h3>Women</h3>
@@ -1262,6 +1289,7 @@
             </article>
 
             <article class="pass rv">
+              <span class="eb-ribbon"><i class="eb-dot"></i> Early Bird Offer</span>
               <span class="pt">Pass 02</span>
               <h3>Men</h3>
               <div class="price">
@@ -1285,6 +1313,7 @@
             </article>
 
             <article class="pass vip-pass rv" id="vip">
+              <span class="eb-ribbon"><i class="eb-dot"></i> Early Bird Offer</span>
               <span class="ribbon">Limited Seats</span>
               <span class="pt">Pass 03</span>
               <h3>VIP</h3>
@@ -1311,6 +1340,7 @@
             </article>
 
             <article class="pass rv">
+              <span class="eb-ribbon"><i class="eb-dot"></i> Early Bird Offer</span>
               <span class="pt">Pass 04</span>
               <h3>Couple</h3>
               <div class="price">
@@ -1334,6 +1364,7 @@
             </article>
 
             <article class="pass vip-pass vip-couple rv" id="vip-couple">
+              <span class="eb-ribbon"><i class="eb-dot"></i> Early Bird Offer</span>
               <span class="ribbon">Limited Seats</span>
               <span class="pt">Pass 05</span>
               <h3>VIP Couple</h3>
@@ -1760,5 +1791,40 @@
 
     <script src="js/main.js" defer></script>
     <script src="js/prosync-top.js" defer></script>
+    <div class="eb-timer" id="ebTimer" role="timer" aria-live="off">
+      <span class="eb-timer-label"><i class="eb-dot"></i><span>Early Bird Offer<br /><em>ends in</em></span></span>
+      <div class="eb-units">
+        <div class="eb-unit"><b id="ebD">00</b><small>Days</small></div>
+        <div class="eb-unit"><b id="ebH">00</b><small>Hrs</small></div>
+        <div class="eb-unit"><b id="ebM">00</b><small>Min</small></div>
+        <div class="eb-unit"><b id="ebS">00</b><small>Sec</small></div>
+      </div>
+      <a class="eb-btn" href="#passes">Grab Offer</a>
+    </div>
+    <script>
+      (function () {
+        var end = new Date("2026-11-24T23:59:59+05:30").getTime();
+        var box = document.getElementById("ebTimer");
+        var ids = ["ebD", "ebH", "ebM", "ebS"];
+        function pad(n) { return n < 10 ? "0" + n : "" + n; }
+        function tick() {
+          var t = end - Date.now();
+          if (t <= 0) {
+            document.documentElement.classList.add("eb-over");
+            return;
+          }
+          var v = [
+            Math.floor(t / 864e5),
+            Math.floor(t / 36e5) % 24,
+            Math.floor(t / 6e4) % 60,
+            Math.floor(t / 1e3) % 60,
+          ];
+          for (var i = 0; i < 4; i++)
+            document.getElementById(ids[i]).textContent = pad(v[i]);
+          setTimeout(tick, 1000);
+        }
+        tick();
+      })();
+    </script>
   </body>
 </html>
