@@ -2,7 +2,7 @@
 //
 // Usage (PowerShell):
 //   $env:RAZORPAY_WEBHOOK_SECRET = "<same secret you set in Razorpay + Vercel>"
-//   node scripts/test-razorpay-webhook.js --url https://YOUR-DOMAIN/api/razorpay-webhook --email test@example.com --phone 9876543210 --amount 14995
+//   node scripts/test-razorpay-webhook.js --url https://YOUR-DOMAIN/api/razorpay-webhook --email test@example.com --phone 9876543210 --amount 15995
 //
 // Options: --event payment_link.paid | payment.captured | payment.failed   (default payment_link.paid)
 //          --name "Test User"
@@ -19,7 +19,7 @@ const event = arg("event", "payment_link.paid");
 const email = arg("email", "test@example.com");
 const phone = "+91" + arg("phone", "9876543210").replace(/\D/g, "").slice(-10);
 const name = arg("name", "Test User");
-const amountPaise = Math.round(Number(arg("amount", "14995")) * 100);
+const amountPaise = Math.round(Number(arg("amount", "15995")) * 100);
 const rid = (p) => p + crypto.randomBytes(7).toString("base64url").replace(/[-_]/g, "x").slice(0, 14);
 const now = Math.floor(Date.now() / 1000);
 
